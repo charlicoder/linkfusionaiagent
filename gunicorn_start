@@ -1,0 +1,24 @@
+#!/bin/bash
+
+NAME=aiagent
+DIR=/home/aiagent/linkfusionaiagent
+USER=aiagent
+GROUP=aiagent
+WORKERS=3
+WORKER_CLASS=uvicorn.workers.UvicornWorker
+VENV=$DIR/.venv/bin/activate
+BIND=unix:$DIR/run/gunicorn.sock
+LOG_LEVEL=error
+
+cd $DIR
+source $VENV
+
+exec gunicorn api:app \
+  --name $NAME \
+  --workers $WORKERS \
+  --worker-class $WORKER_CLASS \
+  --user=$USER \
+  --group=$GROUP \
+  --bind=$BIND \
+  --log-level=$LOG_LEVEL \
+  --log-file=-
