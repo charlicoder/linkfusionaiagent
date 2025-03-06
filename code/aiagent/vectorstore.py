@@ -134,5 +134,5 @@ if __name__ == "__main__":
     #     "https://www.cloudcustomsolutions.com/blog/",
     # ]
     # rag.create_rag_from_docs()
-    # rag.create_rag_from_urls(urls)
     rag.create_rag_from_docs_using_docling()
+    # rag.create_rag_from_urls(urls)
