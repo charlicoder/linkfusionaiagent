@@ -16,11 +16,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-BASE_URL = os.getenv("BASE_URL")
-
-
-print(f"{'*'*10} {BASE_URL}")
-
 
 @tool
 def get_total_contacts_in_my_campaign():
@@ -41,6 +36,15 @@ def get_campaign_list(config: RunnableConfig):
 
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com/"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com/"
+    else:
+        BASE_URL = "http://host.docker.internal:8002"
+
     req_url = f"{BASE_URL}/api/marketing/campaigns/"
 
     headers = {"Authorization": f"Bearer {token}"}
@@ -74,12 +78,20 @@ def create_campaign(name: str, company: str, config: RunnableConfig):
         config (RunnableConfig): Configuration object with user authentication details.
 
     Returns:
-        dict: Response JSON or error message.
+        dict: Response JSON or error message. Return link to new created campaign link if posibble with base url {BASE_URL}
     """
     print(f"Creating campaign: {name} for company: {company}")
 
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com/"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com/"
+    else:
+        BASE_URL = "http://host.docker.internal:8002"
 
     if not token:
         logger.error("Authorization token is missing in config.")

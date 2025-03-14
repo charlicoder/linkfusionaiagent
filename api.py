@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 import uvicorn
-import os
+import os, pdb
 import uuid
 
 load_dotenv()
@@ -17,6 +17,7 @@ class ChatRequest(BaseModel):
     user_id: str
     user_name: str
     thread_id: str
+    env: str
 
 
 # URL = os.getenv("CHAT_API_URL")
@@ -72,12 +73,14 @@ async def chat(request: ChatRequest):
     thread_id = request.thread_id
     user_id = request.user_id
     user_name = request.user_name
+    env = request.env
     config = {
         "configurable": {
             "token": token,
             "thread_id": thread_id,
             "user_id": user_id,
             "user_name": user_name,
+            "env": env,
         }
     }
 
