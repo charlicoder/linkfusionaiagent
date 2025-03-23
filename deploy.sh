@@ -14,23 +14,6 @@ log_message "Starting deployment of LinkFusionAIAgent..."
 log_message "Pulling latest changes from Git..."
 git pull origin main || { log_message "Failed to pull from Git. Exiting."; exit 1; }
 
-# Stop and remove existing Docker containers
-log_message "Stopping existing Docker containers..."
-docker compose down || { log_message "Failed to stop Docker containers. Exiting."; exit 1; }
-
-# Activate the virtual environment
-log_message "Activating the virtual environment..."
-source .venv/bin/activate || { log_message "Failed to activate virtual environment. Exiting."; exit 1; }
-
-
-# Build the LangGraph project
-log_message "Building LangGraph project..."
-langgraph build -t linkfusionaiagent || { log_message "LangGraph build failed. Exiting."; exit 1; }
-
-# Start Docker containers
-log_message "Starting Docker containers..."
-docker compose up -d || { log_message "Failed to start Docker containers. Exiting."; exit 1; }
-
 # Restart FastAPI service
 log_message "Restarting FastAPI service..."
 sudo systemctl restart fastapi.service || { log_message "Failed to restart FastAPI. Exiting."; exit 1; }

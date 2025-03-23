@@ -6,6 +6,7 @@ logs.txt
 hello.py
 world.py
 checkpoints.sqlite
+deployment.log
 
 .apivenv/
 .idea/
