@@ -33,7 +33,7 @@ class AgentGraph:
         return self.graph.compile(checkpointer=memory)
 
 
-graph = AgentGraph().get_graph(memory)
+graph = AgentGraph().get_graph()
 
 
 if __name__ == "__main__":

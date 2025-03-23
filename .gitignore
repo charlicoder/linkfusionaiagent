@@ -41,7 +41,7 @@ share/python-wheels/
 MANIFEST
 logs
 
-data
+data/*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
