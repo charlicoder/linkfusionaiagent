@@ -10,7 +10,7 @@ from code.aiagent.tools import all_tools
 from code.aiagent.state import RagState
 from code.aiagent.nodes import retrieve, generate
 
-# memory = MemorySaver()
+memory = MemorySaver()
 
 tool_node = ToolNode(all_tools)
 llm_with_tools = llm.bind_tools(all_tools)
@@ -45,11 +45,8 @@ class ToolsFlow:
         self.workflow.add_conditional_edges("agent", should_continue, ["tools", END])
         self.workflow.add_edge("tools", "agent")
 
-    def get_tools_graph(self):
-        return self.workflow.compile()
-
-
-rc_tool_graph = ToolsFlow().get_tools_graph()
+    def get_tools_graph(self, memory=None):
+        return self.workflow.compile(checkpointer=memory)
 
 
 class RagFlow:
@@ -62,8 +59,5 @@ class RagFlow:
         self.rag_workflow.add_edge(START, "retrieve")
         self.rag_workflow.add_edge("generate", END)
 
-    def get_rag_graph(self):
-        return self.rag_workflow.compile()
-
-
-rag_graph = RagFlow().get_rag_graph()
+    def get_rag_graph(self, memory=None):
+        return self.rag_workflow.compile(checkpointer=memory)

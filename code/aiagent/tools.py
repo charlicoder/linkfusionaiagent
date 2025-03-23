@@ -4,6 +4,8 @@ import requests
 from dotenv import load_dotenv
 import logging
 import os
+from datetime import datetime, timedelta
+from typing import Optional
 
 load_dotenv()
 
@@ -18,14 +20,50 @@ logger = logging.getLogger(__name__)
 
 
 @tool
-def get_total_contacts_in_my_campaign():
+def get_total_contacts_in_my_campaign(
+    campaign_name: str, folder_name: str, config: RunnableConfig
+):
     """
-    It will returns the total number of contacts in campaign
-    """
+    Returns the total number of contacts in campaign if name is provided else returns total contacts for the user
 
-    return {
-        "response": "This feature on development...! You will get total number of contacts very soon"
-    }
+    Args:
+        campaign_name (str): Name of the campaign to get contacts from
+        folder_name (str): Name of a folder to filter contacts by
+        config (RunnableConfig): Configuration object with user authentication details.
+
+    Returns:
+        dict: List of contacts
+
+    """
+    user_id = config.get("configurable", {}).get("user_id")
+    token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
+        BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
+
+    req_url = f"{BASE_URL}/api/contacts/contact-stats/"
+
+    headers = {"Authorization": f"Bearer {token}"}
+
+    try:
+        response = requests.get(req_url, headers=headers)
+        response.raise_for_status()
+        json_response = response.json()
+
+        # logger.debug(f"Response Status: {response.status_code}")
+        # logger.debug(f"Response JSON: {json_response}")
+
+        return {"response": json_response}  # Ensure the response is returned as JSON
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}", exc_info=True)
+        return {"error": str(e)}
 
 
 @tool
@@ -39,11 +77,13 @@ def get_campaign_list(config: RunnableConfig):
     env = config.get("configurable", {}).get("env")
 
     if env == "prod":
-        BASE_URL = "https://app.linkfusions.com/"
+        BASE_URL = "https://app.linkfusions.com"
     elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com/"
-    else:
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
         BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
 
     req_url = f"{BASE_URL}/api/marketing/campaigns/"
 
@@ -87,11 +127,13 @@ def create_campaign(name: str, company: str, config: RunnableConfig):
     env = config.get("configurable", {}).get("env")
 
     if env == "prod":
-        BASE_URL = "https://app.linkfusions.com/"
+        BASE_URL = "https://app.linkfusions.com"
     elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com/"
-    else:
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
         BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
 
     if not token:
         logger.error("Authorization token is missing in config.")
@@ -117,24 +159,203 @@ def create_campaign(name: str, company: str, config: RunnableConfig):
 
 
 @tool
-def get_campaign_status():
+def get_campaign_status(campaign_name: str, config: RunnableConfig):
     """
-    Agent will campaign status defined by LinkFusion
+    Return status of all campaigns or a specific campaign if name is provided. Status contains following information:
+        email count, contacts count
+
+    Args:
+        campaign_name (str): Campaign name
+        config (RunnableConfig): Configuration object with user authentication details.
+
+    Returns:
+        dict: Status of all campaigns or a specific campaign in name is provided
+
     """
 
-    return {
-        "response": "This feature on development...! You will get campaign status very soon"
-    }
+    user_id = config.get("configurable", {}).get("user_id")
+    token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
+        BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
+
+    req_url = f"{BASE_URL}/api/marketing/campaigns/stats/"
+
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # logger.debug(f"Fetching campaigns for user_id: {user_id}")
+    # logger.debug(f"Request URL: {req_url}")
+    # logger.debug(f"Request Headers: {headers}")
+
+    try:
+        response = requests.get(req_url, headers=headers)
+        response.raise_for_status()
+        json_response = response.json()
+
+        # logger.debug(f"Response Status: {response.status_code}")
+        # logger.debug(f"Response JSON: {json_response}")
+
+        return {"response": json_response}  # Ensure the response is returned as JSON
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}", exc_info=True)
+        return {"error": str(e)}
+
+
+def get_total_new_contacts_added(
+    date: Optional[str] = None,
+    campaign_name: Optional[str] = None,
+    config: RunnableConfig = None,
+):
+    """
+    Return total new contacts added to a campaign. If no campaign name is provided, get the count for all campaigns.
+    Generate date from the string.
+
+    Args:
+        date (Optional[str]): Date string in format '%d/%m/%Y'. If no date is given, use today's date.
+        campaign_name (Optional[str]): Name of the campaign.
+        config (Optional[RunnableConfig]): Configuration for execution.
+
+    Returns:
+        dict: Returns a list of contacts in a campaign or all campaigns added after the provided date or today.
+    """
+
+    if date is None:
+        date = (datetime.today() - timedelta(days=1)).strftime("%d/%m/%Y")
+        print(date)
+
+    user_id = config.get("configurable", {}).get("user_id")
+    token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
+        BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
+
+    req_url = f"{BASE_URL}/api/contacts/new-contacts/"
+
+    headers = {"Authorization": f"Bearer {token}"}
+
+    params = {}
+    if date:
+        params["d"] = date
+    if campaign_name:
+        params["cname"] = campaign_name
+
+    # logger.debug(f"Fetching campaigns for user_id: {user_id}")
+    # logger.debug(f"Request URL: {req_url}")
+    # logger.debug(f"Request Headers: {headers}")
+
+    try:
+        response = requests.get(req_url, headers=headers, params=params)
+        response.raise_for_status()
+        json_response = response.json()
+
+        # logger.debug(f"Response Status: {response.status_code}")
+        # logger.debug(f"Response JSON: {json_response}")
+
+        return {"response": json_response}  # Ensure the response is returned as JSON
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}", exc_info=True)
+        return {"error": str(e)}
 
 
 @tool
-def get_total_new_contacts_added():
+def create_fusion_card(fusion_card_name: str, config: RunnableConfig):
     """
-    Return total new contacts added to a campaign today.
+    Create a fusion card.
+
+    Args:
+        fusion_card_name (str): Name of the campaign.
+        config (RunnableConfig): Configuration object with user authentication details.
+
+    Returns:
+        dict: Response JSON or error message. Return link to new created fusion card link if posibble with base url {BASE_URL}
     """
-    return {
-        "response": "This feature on development...! You will get total new contacts added to a campaign very soon"
-    }
+    user_id = config.get("configurable", {}).get("user_id")
+    token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
+        BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
+
+    if not token:
+        logger.error("Authorization token is missing in config.")
+        return {"error": "Missing authentication token."}
+
+    req_url = f"{BASE_URL}/api/marketing/create-fusion-card-api/"
+
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+    body = {"fusion_card_name": fusion_card_name}
+
+    try:
+        response = requests.post(
+            req_url,
+            headers=headers,
+            json=body,
+        )
+        response.raise_for_status()
+        json_response = response.json()
+
+        return {"response": json_response}  # Ensure the response is returned as JSON
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}", exc_info=True)
+        return {"error": str(e)}
+
+
+@tool
+def get_list_of_fusion_cards(config: RunnableConfig):
+    """
+    Return list of fusion cards
+    """
+    user_id = config.get("configurable", {}).get("user_id")
+    token = config.get("configurable", {}).get("token")
+    env = config.get("configurable", {}).get("env")
+
+    if env == "prod":
+        BASE_URL = "https://app.linkfusions.com"
+    elif env == "dev":
+        BASE_URL = "https://dev.ccsfusion.com"
+    elif env == "docker":
+        BASE_URL = "http://host.docker.internal:8002"
+    else:
+        BASE_URL = "http://localhost:8002"
+
+    if not token:
+        logger.error("Authorization token is missing in config.")
+        return {"error": "Missing authentication token."}
+
+    req_url = f"{BASE_URL}/api/contacts/fusion-card-list/"
+
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+    try:
+        response = requests.get(req_url, headers=headers)
+        response.raise_for_status()
+        json_response = response.json()
+
+        return {"response": json_response}  # Ensure the response is returned as JSON
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}", exc_info=True)
+        return {"error": str(e)}
 
 
 all_tools = [
@@ -143,4 +364,6 @@ all_tools = [
     get_total_new_contacts_added,
     create_campaign,
     get_campaign_list,
+    get_list_of_fusion_cards,
+    create_fusion_card,
 ]

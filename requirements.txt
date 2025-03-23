@@ -67,10 +67,10 @@ langchain-openai==0.3.7
 langchain-text-splitters==0.3.6
 langgraph==0.3.5
 langgraph-api
-langgraph-checkpoint==2.0.16
+langgraph-checkpoint
 langgraph-cli==0.1.74
 langgraph-prebuilt==0.1.2
-langgraph-sdk==0.1.53
+langgraph-sdk
 langsmith==0.3.11
 latex2mathml==3.77.0
 lazy_loader==0.4
