@@ -18,6 +18,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+BASE_URL = "http://host.docker.internal:8000"
+
 
 @tool
 def get_total_contacts_in_my_campaign(
@@ -37,16 +39,6 @@ def get_total_contacts_in_my_campaign(
     """
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     req_url = f"{BASE_URL}/api/contacts/contact-stats/"
 
@@ -74,16 +66,6 @@ def get_campaign_list(config: RunnableConfig):
 
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     req_url = f"{BASE_URL}/api/marketing/campaigns/"
 
@@ -124,16 +106,6 @@ def create_campaign(name: str, company: str, config: RunnableConfig):
 
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     if not token:
         logger.error("Authorization token is missing in config.")
@@ -175,16 +147,6 @@ def get_campaign_status(campaign_name: str, config: RunnableConfig):
 
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     req_url = f"{BASE_URL}/api/marketing/campaigns/stats/"
 
@@ -232,16 +194,6 @@ def get_total_new_contacts_added(
 
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     req_url = f"{BASE_URL}/api/contacts/new-contacts/"
 
@@ -285,16 +237,6 @@ def create_fusion_card(fusion_card_name: str, config: RunnableConfig):
     """
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     if not token:
         logger.error("Authorization token is missing in config.")
@@ -328,16 +270,6 @@ def get_list_of_fusion_cards(config: RunnableConfig):
     """
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
-    env = config.get("configurable", {}).get("env")
-
-    if env == "prod":
-        BASE_URL = "https://app.linkfusions.com"
-    elif env == "dev":
-        BASE_URL = "https://dev.ccsfusion.com"
-    elif env == "docker":
-        BASE_URL = "http://host.docker.internal:8002"
-    else:
-        BASE_URL = "http://localhost:8002"
 
     if not token:
         logger.error("Authorization token is missing in config.")
