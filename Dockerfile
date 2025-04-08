@@ -1,6 +1,10 @@
 # Use a lightweight Python image
 FROM python:3.12
 
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 # Set working directory
 WORKDIR /app
 
@@ -15,3 +19,6 @@ EXPOSE 8002
 
 # Run the FastAPI app
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8002"]
+
+# Use a shell script as entrypoint (optional)
+ENTRYPOINT ["./entrypoint.sh"]
