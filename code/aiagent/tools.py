@@ -233,7 +233,17 @@ def create_fusion_card(fusion_card_name: str, config: RunnableConfig):
         config (RunnableConfig): Configuration object with user authentication details.
 
     Returns:
-        dict: Response JSON or error message. Return link to new created fusion card link if posibble with base url {BASE_URL}
+        dict: Return response as message with link to new created fusion card link if posibble with base url {BASE_URL}
+
+    Example:
+        output: The fusion card named "alayna" has been created successfully. Here are the details:
+
+                    Fusion Card ID: 76
+                    Contact ID: 140490
+                    Status: Success
+                    Message: Form submitted successfully
+                    URL: Fusion Card Update
+                    If you need any further assistance, feel free to ask!
     """
     user_id = config.get("configurable", {}).get("user_id")
     token = config.get("configurable", {}).get("token")
