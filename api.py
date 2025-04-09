@@ -26,7 +26,6 @@ origins = [
     "http://localhost:8000",
     "https://dev.ccsfusion.com",
     "https://app.linkfusions.com",
-    "https://aiagent.linkfusions.com",
 ]
 
 

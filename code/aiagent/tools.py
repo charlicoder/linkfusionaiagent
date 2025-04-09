@@ -18,7 +18,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-BASE_URL = "http://host.docker.internal:8000"
+BASE_URL = os.getenv("BASE_URL")
 
 
 @tool
