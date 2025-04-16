@@ -32,7 +32,7 @@ docker run -d \
     --restart=unless-stopped \
     --name aiagent \
     -p 8002:8002 \
-    -v /home/linkfusion/production/linkfusionaiagent/data:/app/media \
+    -v /home/linkfusion/production/linkfusionaiagent/data:/app/data \
     aiagent
 
 echo "We are done !"

@@ -35,6 +35,6 @@ ROUTER_PROMPT = """You are an expert at routing a user question to a retrieval, 
     The retrieval contains documents related to linkfusion, how to create campaigns.
     Use the retrieval for questions on these topics. If no answer is found use others. 
     The tools calling are used to get or act following:
-    get campaign status, status of  total contacts, create campaign, list of fusion card, create fusion card
+    get campaign status, status of  total contacts, create campaign, list of fusion card, create fusion card, upload or import contacts
     Use the tools_call for actions on these
     Otherwise, use others."""

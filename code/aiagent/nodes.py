@@ -1,7 +1,7 @@
 from typing import Literal
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from code.aiagent.models import llm, router_model
+from code.aiagent.models import llm, llm_with_tools, router_model
 from code.aiagent.state import RagState, RouterState
 from code.aiagent.prompts import SYSTEM_PROMPT, MSG, ROUTER_PROMPT
 from code.aiagent.vectorstore import retriever
@@ -45,6 +45,11 @@ def router_node(state: RouterState):
 
 def normal_llm_node(state: RouterState):
     response = llm.invoke(state["messages"])
+    return {"messages": [response]}
+
+
+def chatbot(state: RouterState):
+    response = llm_with_tools.invoke(state["messages"])
     return {"messages": [response]}
 
 

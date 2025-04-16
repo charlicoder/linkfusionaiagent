@@ -6,6 +6,7 @@ import logging
 import os
 from datetime import datetime, timedelta
 from typing import Optional
+from typing import List, Dict
 
 load_dotenv()
 
@@ -300,6 +301,44 @@ def get_list_of_fusion_cards(config: RunnableConfig):
         return {"error": str(e)}
 
 
+@tool
+def upload_contacts_to_campaign(
+    campaign_name: str, contacts: List[Dict[str, str]], config: RunnableConfig
+):
+    """
+    Upload/import contacts to the campaign. if no contacts provided response with the request to upload a file with contacts in proper format.
+    Do not generate contacts if no contacts in given in context.
+    Args:
+        campaign_name (str): Name of the campaign.
+        contacts (List[Dict[str, str]]): List of contacts to import
+        config (RunnableConfig): Configuration object with user authentication details.
+
+    Returns:
+        dict: Return response status with how many contacts are imported successfully.
+    """
+    user_id = config.get("configurable", {}).get("user_id")
+    token = config.get("configurable", {}).get("token")
+
+    if not token:
+        logger.error("Authorization token is missing in config.")
+        return {"error": "Missing authentication token."}
+
+    req_url = f"{BASE_URL}/api/contacts/upload-contacts/"
+
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+    body = {"campaign_name": campaign_name, "contacts": contacts}
+
+    try:
+        response = requests.post(req_url, headers=headers, json=body)
+        # response.raise_for_status()
+        json_response = response.json()
+        return {"response": json_response}
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}", exc_info=True)
+        return {"error": str(e)}
+
+
 all_tools = [
     get_total_contacts_in_my_campaign,
     get_campaign_status,
@@ -308,4 +347,5 @@ all_tools = [
     get_campaign_list,
     get_list_of_fusion_cards,
     create_fusion_card,
+    upload_contacts_to_campaign,
 ]
