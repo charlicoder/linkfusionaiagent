@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from langchain_core.messages import HumanMessage, SystemMessage
 from code.aiagent.models import llm, llm_campaign
 from code.utils import read_xlsx_file
+from code.bots import graph
 import logging
 import os
 
@@ -26,7 +27,6 @@ logger = logging.getLogger(__name__)
 from pydantic import BaseModel
 
 # from code.agent import graph
-from human import graph
 
 
 class ChatRequest(BaseModel):
