@@ -8,7 +8,6 @@ from contextlib import asynccontextmanager
 from langchain_core.messages import HumanMessage, SystemMessage
 from code.aiagent.models import llm, llm_campaign
 from code.utils import read_xlsx_file
-from code.bots import graph
 import logging
 import os
 
@@ -26,7 +25,9 @@ logger = logging.getLogger(__name__)
 
 from pydantic import BaseModel
 
-# from code.agent import graph
+from code.agent import graph
+
+# from code.bots import graph
 
 
 class ChatRequest(BaseModel):
@@ -85,7 +86,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://app.linkfusions.com"],
+    allow_origins=["https://app.linkfusions.com", "http://127.0.0.1:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

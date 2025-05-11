@@ -10,7 +10,7 @@ from code.aiagent.tools import all_tools
 from code.aiagent.state import RagState
 from code.aiagent.nodes import retrieve, generate
 
-memory = MemorySaver()
+# memory = MemorySaver()
 
 tool_node = ToolNode(all_tools)
 llm_with_tools = llm.bind_tools(all_tools)
